@@ -1,9 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import logo from '../assest/signin.gif';
 import { useState } from 'react';
 import imageToBase64 from '../helpers/imageToBase64';
+import SummaryApi from '../common';
+import { toast } from 'react-toastify';
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +18,8 @@ function Signup() {
     confirmPassword: '',
     profilePic: '',
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,8 +44,31 @@ function Signup() {
       };
     });
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (data.password === data.confirmPassword) {
+      const dataResponse = await fetch(SummaryApi.signUp.url, {
+        method: SummaryApi.signUp.method,
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      const dataApi = await dataResponse.json();
+
+      if (dataApi.success) {
+        toast.success(dataApi.message);
+        navigate('/login');
+      }
+
+      if (dataApi.error) {
+        toast.error(dataApi.message);
+      }
+    } else {
+      console.log('please check password');
+    }
   };
 
   return (
