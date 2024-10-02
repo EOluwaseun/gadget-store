@@ -1,3 +1,17 @@
 body {
   background: rgb(250, 249, 249);
 }
+
+.customShadow {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-table th {
+  @apply bg-white p-4;
+}
+.user-table th {
+  @apply border text-base font-medium;
+}
+.user-table td {
+  @apply border text-base text-center;
+}
