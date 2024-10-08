@@ -1,24 +1,23 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react';
 import { GrClose, GrCloudUpload, GrTrash } from 'react-icons/gr';
-import productCategory from '../helpers/ProductCategory';
-import uploadImages from '../helpers/uploadImages';
-import DisplayImage from './DisplayImage';
-import SummaryApi from '../common';
 import { toast } from 'react-toastify';
+import uploadImages from '../helpers/uploadImages';
+import SummaryApi from '../common';
+import productCategory from '../helpers/ProductCategory';
+import DisplayImage from './DisplayImage';
 
-// eslint-disable-next-line react/prop-types
-function UploadedProducts({ onClose, fetchData }) {
+function AdminEditProduct({ onClose, productData, fetchData }) {
   const [data, setData] = useState({
-    productName: '',
-    brandName: '',
-    category: '',
-    productImage: [],
-    description: '',
-    price: '',
-    sellingPrice: '',
+    ...productData,
+    productName: productData?.productName,
+    brandName: productData?.brandName,
+    category: productData?.category,
+    productImage: productData?.productImage || [],
+    description: productData?.description,
+    price: productData?.price,
+    sellingPrice: productData?.sellingPrice,
   });
-
-  // const [uploadProductImageInput, setUploadProductImageInput] = useState('');
 
   const [openFullScreenImage, setOpenFullscreenImage] = useState(false);
   const [fullScreenImage, setFullscreenImage] = useState('');
@@ -37,7 +36,7 @@ function UploadedProducts({ onClose, fetchData }) {
   const handleDeleteProduct = async (index) => {
     // console.log(index);
     const newProductImage = [...data.productImage];
-    newProductImage?.splice(index, 1);
+    newProductImage.splice(index, 1);
 
     setData((prev) => {
       return {
@@ -67,12 +66,13 @@ function UploadedProducts({ onClose, fetchData }) {
     e.preventDefault();
     // console.log(data);*
 
-    const response = await fetch(SummaryApi.uploadProduct.url, {
-      method: SummaryApi.uploadProduct.method,
+    const response = await fetch(SummaryApi.updateProduct.url, {
+      method: SummaryApi.updateProduct.method,
       credentials: 'include',
       headers: {
         'content-type': 'application/json',
       },
+
       body: JSON.stringify(data),
     });
     const responseData = await response.json();
@@ -88,7 +88,6 @@ function UploadedProducts({ onClose, fetchData }) {
       toast.error(responseData?.message);
     }
   };
-
   return (
     <div className="fixed flex h-full w-full justify-center items-center bg-slate-200/30 top-0 left-0 right-0 bottom-0">
       <div className="bg-white p-4 rounded w-full max-w-2xl h-full max-h-[80%] overflow-hidden">
@@ -172,7 +171,7 @@ function UploadedProducts({ onClose, fetchData }) {
                 {data.productImage.map((item, i) => {
                   return (
                     // eslint-disable-next-line react/jsx-key
-                    <div className="relative group">
+                    <div key={i} className="relative group">
                       {
                         <img
                           key={i}
@@ -246,7 +245,7 @@ function UploadedProducts({ onClose, fetchData }) {
             type="submit"
             className="px-3 py-2 bg-red-600 text-white mb-4 hover:bg-red-700"
           >
-            Upload Product
+            Update Product
           </button>
         </form>
       </div>
@@ -261,4 +260,4 @@ function UploadedProducts({ onClose, fetchData }) {
   );
 }
 
-export default UploadedProducts;
+export default AdminEditProduct;
