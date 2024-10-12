@@ -15,7 +15,8 @@ function Login() {
     password: '',
   });
 
-  const { fectchUserDetails } = useContext(Context);
+  // cart will fect whenever user login
+  const { fectchUserDetails, fetchUserAddToCart } = useContext(Context);
 
   const navigate = useNavigate();
 
@@ -47,6 +48,7 @@ function Login() {
       toast.success(dataApi.message);
       navigate('/');
       fectchUserDetails();
+      fetchUserAddToCart();
     }
 
     if (dataApi.error) {

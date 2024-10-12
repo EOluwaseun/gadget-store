@@ -37,13 +37,13 @@ function CategoryList() {
 
   return (
     <div className="container mx-auto px-4">
-      <div className="my-6 flex items-center gap-4 justify-between overflow-scroll scrollbar-none">
+      <div className="flex items-center gap-4 justify-between overflow-scroll scrollbar-none">
         {loading
           ? categoryLoading.map((el, index) => {
               return (
                 <div
                   key={`categoryLoading${index}`}
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden bg-slate-200 animate-pulse"
+                  className="animate-pulse w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden bg-slate-200 animate-pulse"
                 ></div>
               );
             })

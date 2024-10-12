@@ -2,18 +2,20 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import fetchCategoryWiseProduct from '../helpers/fetchCategoryWiseProduct';
 import displayCurrency from './displayCurrency';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
-import { Link } from 'react-router-dom';
 import addToCart from '../helpers/addCart';
+import { Link } from 'react-router-dom';
 import Context from '../context';
 
 // eslint-disable-next-line react/prop-types
-function HorizontalCartProduct({ category, heading }) {
+function VerticalCardProduct({ category, heading }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const loadingList = new Array(13).fill(null);
 
   //   const [scroll, setScroll] = useState(0);
   const scrollElement = useRef();
+
+  const { fetchUserAddToCart } = useContext(Context);
 
   const fetchData = async () => {
     setLoading(true);
@@ -22,8 +24,6 @@ function HorizontalCartProduct({ category, heading }) {
 
     setData(categoryProduct?.data);
   };
-
-  const { fetchUserAddToCart } = useContext(Context);
 
   const handleAddToCart = async (e, id) => {
     await addToCart(e, id);
@@ -45,7 +45,7 @@ function HorizontalCartProduct({ category, heading }) {
       <h2 className="text-2xl font-bold capitalize py-4">{heading}</h2>
       <div
         ref={scrollElement}
-        className="flex items-center gap-2 md:gap-6 overflow-scroll scrollbar-none transition-all"
+        className="flex items-center gap-2 md:gap-6 overflow-x-scroll scrollbar-none transition-all"
       >
         <div className="z-10">
           <button
@@ -61,7 +61,6 @@ function HorizontalCartProduct({ category, heading }) {
             <FaArrowRight />
           </button>
         </div>
-
         {loading
           ? loadingList.map((item, i) => {
               return (
@@ -89,15 +88,15 @@ function HorizontalCartProduct({ category, heading }) {
                 <Link
                   to={`product/${product._id}`}
                   key={i}
-                  className="w-full min-w-[200px] md:min-w-[320px]  max-w-[200px] md:max-w-[320px] h-36 bg-white rounded-sm shadow flex"
+                  className="w-full min-w-[280px] md:min-w-[320px]  max-w-[200px] md:max-w-[320px] bg-white rounded-sm shadow"
                 >
-                  <div className="bg-slate-200 h-full p-4 minw-[120px] md:min-w-[145px]">
+                  <div className="bg-slate-200 p-4 minw-[280px] md:min-w-[145px] flex justify-center items-center">
                     <img
                       src={product?.productImage[0]}
-                      className="object-scale-down h-full hover:scale-[105%] transition-all mix-blend-multiply"
+                      className="object-scale-down h-48 hover:scale-[105%] transition-all mix-blend-multiply"
                     />
                   </div>
-                  <div className="p-4 grid">
+                  <div className="p-4 grid gap-3">
                     <h2 className="font-medium text-base md:text-lg text-ellipsis line-clamp-1 mix-blend-multiply">
                       {product?.productName}
                     </h2>
@@ -128,4 +127,4 @@ function HorizontalCartProduct({ category, heading }) {
   );
 }
 
-export default HorizontalCartProduct;
+export default VerticalCardProduct;
