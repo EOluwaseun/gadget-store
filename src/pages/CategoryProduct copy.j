@@ -5,12 +5,35 @@ import VerticalCard from '../componets/VerticalCard';
 import SummaryApi from '../common';
 
 function CategoryProduct() {
+  /*const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const urlSearch = new URLSearchParams(location.search);
+
+  const urlCategoryListArray = urlSearch.getAll('category');
+  const urlBrandListArray = urlSearch.getAll('brandName');
+
+  const initialFilters = {
+    category: urlCategoryListArray.reduce(
+      (acc, el) => ({ ...acc, [el]: true }),
+      {}
+    ),
+    brandName: urlBrandListArray.reduce(
+      (acc, el) => ({ ...acc, [el]: true }),
+      {}
+    ),
+  };
+
+  const [selectedFilters, setSelectedFilters] = useState(initialFilters);*/
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const url = location.pathname.split('/')[1];
-  // console.log(url);
+
+  console.log(url);
 
   // Initial empty filters state
   const initialFilters = {
@@ -19,82 +42,80 @@ function CategoryProduct() {
     color: [],
   };
 
+  // Temporary state for filters
   const [selectedFilters, setSelectedFilters] = useState(initialFilters);
+
   const [sortBy, setSortBy] = useState('');
 
-  // Function to handle selections (category, brand, color)
-  const handleSelectFilter = (e) => {
-    const { name, value, checked } = e.target;
-    setSelectedFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: checked
-        ? [...prevFilters[name], value] // Add selected filter
-        : prevFilters[name].filter((filter) => filter !== value), // Remove unselected filter
-    }));
-  };
-
-  // Apply filters and update URL in a cleaner format
-  const applyFilters = () => {
-    const category = selectedFilters.category.join(',');
-    const brandName = selectedFilters.brandName.join(',');
-    const color = selectedFilters.color.join(',');
-
-    // Construct the cleaner URL
-    const urlPath = `${url}/category/${category}${
-      brandName ? `/brand/${brandName}` : ''
-    }${color ? `/color/${color}` : ''}`;
-
-    navigate(`/${urlPath}`);
-  };
-
-  // Function to clear all filters
-  const clearFilters = () => {
-    setSelectedFilters(initialFilters);
-    navigate(`/${url}`);
-  };
-
-  // Fetch filtered data based on selected filters
-  /*const fetchData = async () => {
-    // setLoading(true);
-    const { category, brandName, color } = selectedFilters;
-
+  /*
+  const fetchData = async () => {
     const response = await fetch(SummaryApi.filterProduct.url, {
       method: SummaryApi.filterProduct.method,
       headers: {
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ category, brandName, color }),
+      body: JSON.stringify({
+        category: Object.keys(selectedFilters.category).filter(
+          (key) => selectedFilters.category[key]
+        ),
+        brandName: Object.keys(selectedFilters.brandName).filter(
+          (key) => selectedFilters.brandName[key]
+        ),
+      }),
     });
 
     const dataResponse = await response.json();
     setData(dataResponse?.data || []);
-    // console.log(category.length);
+  };*/
 
-    // setLoading(false);
+  // Function to handle selections (category, brand, color)
+  const handleSelectFilter = (e) => {
+    const { name, value, checked } = e.target;
+    setSelectedFilters((prevFilters) => {
+      return {
+        ...prevFilters,
+        [name]: checked
+          ? [...prevFilters[name], value] // Add selected filter
+          : prevFilters[name].filter((filter) => filter !== value), // Remove unselected filter
+      };
+    });
   };
-*/
-  // Auto-apply filters based on URL path
+
+  // Function to apply filters (only when button is clicked)
+  const applyFilters = () => {
+    const urlParams = new URLSearchParams();
+
+    // Add each filter to URL parameters
+    Object.keys(selectedFilters).forEach((key) => {
+      selectedFilters[key].forEach((value) => {
+        urlParams.append(key, value);
+      });
+    });
+
+    // Navigate to the updated URL with filters
+    // navigate(`/product-category?${urlParams.toString()}`);
+    navigate(`/${url}?${urlParams.toString()}`);
+  };
+
+  // Function to clear all filters
+  const clearFilters = () => {
+    // Reset selected filters to the initial state
+    setSelectedFilters(initialFilters);
+    // price: { min: 0, max: Infinity },
+
+    // Navigate to the base URL without any query parameters
+    // navigate(`/product-category`);
+    navigate(`/${url}`);
+  };
+
+  // Fetch filtered data when URL parameters change
   useEffect(() => {
-    const pathParts = location.pathname.split('/');
-    // console.log(pathParts);
+    const urlSearch = new URLSearchParams(location.search);
+    const category = urlSearch.getAll('category');
+    const brandName = urlSearch.getAll('brandName');
+    const color = urlSearch.getAll('color');
 
-    const categoryIndex = pathParts.indexOf('category');
-    const brandIndex = pathParts.indexOf('brand');
-    const colorIndex = pathParts.indexOf('color');
-    // console.log(brandIndex);
-
-    const category =
-      categoryIndex !== -1 ? pathParts[categoryIndex + 1].split(',') : [];
-    const brandName =
-      brandIndex !== -1 ? pathParts[brandIndex + 1].split(',') : [];
-    const color = colorIndex !== -1 ? pathParts[colorIndex + 1].split(',') : [];
-    // console.log(category);
-
-    // setSelectedFilters({
-    //   category,
-    //   brandName,
-    //   color,
-    // });
+    //this will make it chech automatically
     setSelectedFilters((prevFilters) => ({
       ...prevFilters,
       category: category.length ? category : prevFilters.category,
@@ -103,7 +124,6 @@ function CategoryProduct() {
     }));
 
     const fetchData = async () => {
-      setLoading(true);
       const response = await fetch(SummaryApi.filterProduct.url, {
         method: SummaryApi.filterProduct.method,
         headers: {
@@ -118,13 +138,40 @@ function CategoryProduct() {
 
       const dataResponse = await response.json();
       setData(dataResponse?.data || []);
-      setLoading(false);
     };
 
     fetchData();
-  }, [location.pathname]);
+  }, [location.search]);
 
-  // Fetch filtered data based on selected filters
+  /*
+  const handleSelectFilter = (e) => {
+    const { name, value, checked } = e.target;
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [name]: {
+        ...prev[name],
+        [value]: checked,
+      },
+    }));
+  };
+
+  // Step 3: Update URL and fetch data whenever filters change
+  useEffect(() => {
+    const activeCategories = Object.keys(selectedFilters.category).filter(
+      (key) => selectedFilters.category[key]
+    );
+    const activeBrands = Object.keys(selectedFilters.brandName).filter(
+      (key) => selectedFilters.brandName[key]
+    );
+
+    const queryString = [
+      ...activeCategories.map((el) => `category=${el}`),
+      ...activeBrands.map((el) => `brandName=${el}`),
+    ].join('&');
+
+    navigate(`/product-category?${queryString}`);
+    fetchData();
+  }, [selectedFilters]);*/
 
   // Handle sorting
   const handleSort = (e) => {

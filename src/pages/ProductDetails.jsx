@@ -1,32 +1,38 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import SummaryApi from '../common';
 import { FaStar, FaStarHalf } from 'react-icons/fa6';
 import displayCurrency from '../componets/displayCurrency';
 import DisplayCategoryWise from '../componets/DisplayCategoryWise';
+import addToCart from '../helpers/addCart';
+import Context from '../context';
 
+// eslint-disable-next-line react-refresh/only-export-components
+export const productStructure = {
+  productName: '',
+  brandName: '',
+  category: '',
+  productImage: [],
+  description: '',
+  price: '',
+  sellingPrice: '',
+};
 function ProductDetails() {
-  const [data, setData] = useState({
-    productName: '',
-    brandName: '',
-    category: '',
-    productImage: [],
-    description: '',
-    price: '',
-    sellingPrice: '',
-  });
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(productStructure);
+  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState('');
   const [imageZoomCordinate, setImageZoomCordinate] = useState({
     x: 0,
     y: 0,
   });
   const [zoomImage, setZoomImage] = useState(false);
+  const { fetchUserAddToCart } = useContext(Context);
 
   const productImageList = new Array(4).fill(null);
 
   const params = useParams();
   const { id } = params;
+  const navigate = useNavigate();
 
   const fetchProductDetails = async () => {
     setLoading(true);
@@ -48,8 +54,10 @@ function ProductDetails() {
   // console.log(data.category);
 
   useEffect(() => {
+    setData(productStructure);
+    setLoading(true);
     fetchProductDetails();
-  }, []);
+  }, [params]);
 
   const handleMouseHover = (imageUrl) => {
     setActiveImage(imageUrl);
@@ -59,37 +67,78 @@ function ProductDetails() {
   //     setActiveImage(imageUrl);
   //   };
 
-  const hadleZoomImage = useCallback(
+  /*const hadleZoomImage = useCallback(
     (e) => {
       // get cordinate
-      setZoomImage(true); //set zoom to true
+      // setZoomImage(true);
       const { left, top, height, width } = e.target.getBoundingClientRect();
-      // console.log(left, top, height, width);
 
       const x = (e.clientX - left) / width;
       const y = (e.clientY - top) / height;
       setImageZoomCordinate({ x, y });
+      setZoomImage(true);
     },
 
     [imageZoomCordinate]
-  );
+  );*/
+
+  const hadleZoomImage = useCallback((e) => {
+    let clientX, clientY;
+
+    if (e.type === 'mousemove') {
+      // For desktop (mouse)
+      clientX = e.clientX;
+      clientY = e.clientY;
+    } else if (e.type === 'touchmove') {
+      // For mobile (touch)
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    }
+
+    const { left, top, height, width } = e.target.getBoundingClientRect();
+    const x = (clientX - left) / width;
+    const y = (clientY - top) / height;
+
+    setImageZoomCordinate({ x, y });
+    setZoomImage(true); // Activate zoom
+  }, []);
 
   const handleImageZoomOut = () => {
     setZoomImage(false);
   };
+
+  const handleAddToCart = async (e, id) => {
+    await addToCart(e, id);
+    fetchUserAddToCart();
+  };
+
+  const handleBuy = async (e, id) => {
+    await addToCart(e, id);
+    fetchUserAddToCart();
+    navigate(`/cart`);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="min-h-[200px] flex flex-col lg:flex-row lg:gap-4">
         <div className="h-96 flex flex-col items-center lg:flex-row-reverse gap-4">
-          <div className="relative h-[300px] w-[350px] lg:h-96 lg:w-96 bg-slate-200 p-2">
+          <div className="relative h-[300px] w-[350px] lg:h-96 lg:w-96 bg-slate-200 p-2 overflow-hidden">
             <img
               src={activeImage}
               onMouseMove={hadleZoomImage}
               onMouseLeave={handleImageZoomOut}
-              className="mix-blend-multiply cursor-pointer cover lg:object-scale-down w-full h-full"
+              // className="mix-blend-multiply cursor-pointer cover lg:object-scale-down w-full h-full"
+              className={`cursor-pointer object-cover w-full h-full transition-transform duration-300 ${
+                zoomImage ? 'zoom-container' : 'scale-100'
+              }`}
+              style={{
+                transformOrigin: `${imageZoomCordinate.x * 100}% ${
+                  imageZoomCordinate.y * 100
+                }%`,
+              }}
             />
 
-            {/* zoom image */}
+            {/*
             {zoomImage ? (
               <div className="absolute hidden lg:block min-w-[500px] min-h-[400px] overflow-hidden bg-slate-200 p-1 top-0 -right-[510px]">
                 <div
@@ -105,7 +154,7 @@ function ProductDetails() {
               </div>
             ) : (
               ''
-            )}
+            )}*/}
           </div>
           <div className="h-full">
             {loading ? (
@@ -194,10 +243,16 @@ function ProductDetails() {
               </p>
             </div>
             <div className="flex gap-3">
-              <button className="border-2 border-red-600 rounded px-3 py-2 min-w-[120px] text-red-600 font-medium hover:bg-red-600 hover:text-white">
+              <button
+                onClick={(e) => handleBuy(e, data?._id)}
+                className="border-2 border-red-600 rounded px-3 py-2 min-w-[120px] text-red-600 font-medium hover:bg-red-600 hover:text-white"
+              >
                 Buy
               </button>
-              <button className="border-2 border-red-600 rounded px-3 py-2 min-w-[120px] text-red-600 font-medium hover:bg-red-600 hover:text-white">
+              <button
+                onClick={(e) => handleAddToCart(e, data?._id)}
+                className="border-2 border-red-600 rounded px-3 py-2 min-w-[120px] text-red-600 font-medium hover:bg-red-600 hover:text-white"
+              >
                 Add to Cart
               </button>
             </div>

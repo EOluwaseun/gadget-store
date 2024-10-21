@@ -7,11 +7,10 @@ const productCategory = [
   { id: 6, label: 'Printers', value: 'printers' },
   { id: 7, label: 'Processor', value: 'processor' },
   { id: 8, label: 'Refrigerator', value: 'refrigerator' },
-  { id: 9, label: 'Processor', value: 'processor' },
-  { id: 10, label: 'Speaker', value: 'speaker' },
-  { id: 11, label: 'Trimmer', value: 'trimmer' },
-  { id: 12, label: 'Television', value: 'television' },
-  { id: 13, label: 'Watches', value: 'watches' },
+  { id: 9, label: 'Speaker', value: 'speaker' },
+  { id: 10, label: 'Trimmer', value: 'trimmer' },
+  { id: 11, label: 'Television', value: 'television' },
+  { id: 12, label: 'Watches', value: 'watches' },
 ];
 
 export default productCategory;

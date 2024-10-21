@@ -47,10 +47,11 @@ function App() {
   };
 
   useEffect(() => {
+    // setProductCount(0);
     fectchUserDetails();
     //userCart product
     fetchUserAddToCart();
-  }, []);
+  }, [cartProductCount]);
 
   return (
     <>

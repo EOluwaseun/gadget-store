@@ -49,9 +49,14 @@ function CategoryList() {
             })
           : categoryProduct?.map((item, i) => {
               return (
+                // eslint-disable-next-line react/jsx-key
                 <Link
-                  to={`/product-category/${item?.category}`}
                   key={i}
+                  // to={`/product-category?category=${item?.category}`}
+                  // to={`/product-category/category/${item?.category}`}
+                  to={`/product-category/category/${encodeURIComponent(
+                    item?.category
+                  )}`}
                   className="cursor-pointer"
                 >
                   <div className="w-20 h-20 md:w-20 md:h-20 bg-slate-200 flex items-center justify-center rounded-full overflow-hidden p-4">

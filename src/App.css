@@ -20,3 +20,8 @@ body {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+.zoom-container:hover {
+  transform: scale(2); /* 200% scaling */
+  transform-origin: center; /* Controls the zooming focus point */
+}

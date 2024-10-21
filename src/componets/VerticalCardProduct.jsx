@@ -86,7 +86,7 @@ function VerticalCardProduct({ category, heading }) {
           : data.map((product, i) => {
               return (
                 <Link
-                  to={`product/${product._id}`}
+                  to={`/product/${product._id}`}
                   key={i}
                   className="w-full min-w-[280px] md:min-w-[320px]  max-w-[200px] md:max-w-[320px] bg-white rounded-sm shadow"
                 >

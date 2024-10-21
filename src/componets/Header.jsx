@@ -1,14 +1,12 @@
-/* eslint-disable no-undef */
-/* eslint-disable react/jsx-no-comment-textnodes */
 import logo from '../assest/logo.png';
 import { GrSearch } from 'react-icons/gr';
 import { FaCartShopping, FaRegCircleUser } from 'react-icons/fa6';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import SummaryApi from '../common';
 import { toast } from 'react-toastify';
 import { setUserDetails } from '../store/userSlice';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ROLE from '../common/role';
 import Context from '../context';
 
@@ -18,6 +16,18 @@ function Header() {
   const dispatch = useDispatch();
   const [menuDisplay, setMenuDisplay] = useState(false);
   const context = useContext(Context);
+
+  const navigate = useNavigate();
+  const searchInput = useLocation();
+  const URLSearch = new URLSearchParams(searchInput?.search);
+  // const searchQuery = URLSearch.getAll('q');
+  const searchQuery = URLSearch.get('q') || '';
+  // const [search, setSearch] = useState(searchInput?.search?.split('=')[1]);
+  const [search, setSearch] = useState(searchQuery);
+  console.log(searchQuery);
+  console.log(searchInput);
+
+  // search in the url and also in the search input
 
   const handleLogout = async () => {
     const fetchData = await fetch(SummaryApi.userLogout.url, {
@@ -35,7 +45,34 @@ function Header() {
     }
   };
 
-  console.log(context);
+  // console.log(context);
+
+  /*// eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleSearch = (e) => {
+    const { value } = e.target;
+    setSearch(searchQuery ? value : '');
+    if (value) {
+      navigate(`/search?q=${value}`); //if query is available it will display
+    } else {
+      navigate('/search');
+    }
+  };*/
+
+  // Synchronize the search input with the URL parameter whenever it changes
+  useEffect(() => {
+    setSearch(searchQuery);
+  }, [searchQuery]);
+
+  // Handle the search input and update the URL
+  const handleSearch = (e) => {
+    const { value } = e.target;
+    setSearch(value);
+    if (value) {
+      navigate(`/search?q=${value}`);
+    } else {
+      navigate('/search');
+    }
+  };
 
   return (
     <header className="h-16 top-0 shadow-md bg-white fixed w-full z-20">
@@ -50,9 +87,11 @@ function Header() {
         max-w-sm border-[0.25px] rounded-full pl-2 focus-within:shadow"
         >
           <input
+            onChange={handleSearch}
             type="text"
             placeholder="search product here.."
             className="w-full outline-none"
+            value={search}
           />
 
           <div className="text-lg min-w-[50px] h-8 bg-red-500 text-white flex items-center justify-center rounded-r-full">

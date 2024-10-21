@@ -10,6 +10,11 @@ import AllUsers from '../pages/AllUsers';
 import CategoryProduct from '../pages/CategoryProduct';
 import ProductDetails from '../pages/ProductDetails';
 import Cart from '../pages/Cart';
+import SearchProduct from '../pages/SearchProduct';
+import Success from '../pages/success';
+import Cancel from '../pages/Cancel';
+import OrderPage from '../pages/OrderPage';
+// import Question from '../pages/question';
 
 const router = createBrowserRouter([
   {
@@ -33,9 +38,21 @@ const router = createBrowserRouter([
         element: <Signup />,
       },
       {
-        path: 'product-category/:categoryName',
+        // path: 'product-category/category/:categories/brand:brands?',
+        path: 'product-category/category/:categories/*',
+
         element: <CategoryProduct />,
       },
+      {
+        path: 'product-category',
+
+        element: <CategoryProduct />,
+      },
+
+      // {
+      //   path: 'category',
+      //   element: <CategoryProduct />,
+      // },
 
       {
         path: 'product/:id',
@@ -44,6 +61,22 @@ const router = createBrowserRouter([
       {
         path: 'cart',
         element: <Cart />,
+      },
+      {
+        path: 'success',
+        element: <Success />,
+      },
+      {
+        path: 'cancel',
+        element: <Cancel />,
+      },
+      {
+        path: 'search',
+        element: <SearchProduct />,
+      },
+      {
+        path: 'order',
+        element: <OrderPage />,
       },
       {
         path: 'admin-panel',

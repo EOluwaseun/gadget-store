@@ -6,6 +6,7 @@ import AdminProductCard from '../componets/AdminProductCard';
 function AllProducts() {
   const [openUploadProduct, setOpenUploadProduct] = useState(false);
   const [allProduct, setAllProduct] = useState([]);
+  // const [category, setCategory] = useState([]);
 
   const fetchAllProduct = async () => {
     const response = await fetch(SummaryApi?.allProduct.url);
@@ -17,6 +18,16 @@ function AllProducts() {
   useEffect(() => {
     fetchAllProduct();
   }, []);
+  // console.log(allProduct);
+
+  // let newCategory = [];
+
+  // for (let index = 0; index < allProduct?.length; index++) {
+  //   const element = allProduct[index];
+  //   newCategory.push(element.category);
+  // }
+
+  // console.log([...new Set(newCategory)]);
 
   return (
     <div>
