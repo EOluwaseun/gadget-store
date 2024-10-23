@@ -121,13 +121,22 @@ function Header() {
               <div className="absolute bottom-0  top-11 h-fit p-4 bg-white rounded shadow-lg">
                 <nav onClick={() => setMenuDisplay((prev) => !prev)}>
                   {user.role === ROLE.ADMIN ? (
-                    <Link
-                      onClick={() => setMenuDisplay((prev) => !prev)}
-                      to={'/admin-panel/all-products'}
-                      className="whitespace-nowrap hover:bg-slate-100 p-2 hidden md:block"
-                    >
-                      Admin Panel
-                    </Link>
+                    <>
+                      <Link
+                        onClick={() => setMenuDisplay((prev) => !prev)}
+                        to={'/admin-panel/all-products'}
+                        className="whitespace-nowrap hover:bg-slate-100 p-2 hidden md:block"
+                      >
+                        Admin Panel
+                      </Link>
+                      <Link
+                        onClick={() => setMenuDisplay((prev) => !prev)}
+                        to={'/order'}
+                        className="whitespace-nowrap hover:bg-slate-100 p-2 hidden md:block"
+                      >
+                        Orders
+                      </Link>
+                    </>
                   ) : (
                     ''
                   )}
