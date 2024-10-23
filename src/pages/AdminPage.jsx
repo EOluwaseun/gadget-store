@@ -44,6 +44,9 @@ function AdminPage() {
             <Link to={'all-products'} className="px-4 py-1 hover:bg-slate-100">
               Products
             </Link>
+            <Link to={'all-orders'} className="px-4 py-1 hover:bg-slate-100">
+              Orders
+            </Link>
           </nav>
         </div>
       </aside>
